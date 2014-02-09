@@ -1,0 +1,45 @@
+详细设计
+
+地图
+
+由 grid system 组成
+城市是 grid system 中的一个格子
+城市由道路连接
+
+数据定义
+city：
+id
+name
+x
+y
+conn
+
+测试数据
+{
+    "city": [{
+        "id": 1,
+        "name": "testA",
+        "x": 1,
+        "y": 1,
+        "road": [1]
+    }, {
+        "id": 2,
+        "name": "testB",
+        "x": 5,
+        "y": 5,
+        "road": [1, 2]
+    }, {
+        "id": 3,
+        "name": "testC",
+        "x": 10,
+        "y": 10,
+        "road": [2]
+    }],
+    "road": [{
+        "id": 1,
+        "conn": [1, 2]
+    }, {
+        "id": 2,
+        "conn": [2, 3]
+    }]
+}
