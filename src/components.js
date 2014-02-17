@@ -63,9 +63,9 @@ Crafty.c('City', {
 
         this.actor.bind('Click', this.onClick);
     },
-    onClick: function () {
-        console.log(this);
-        Crafty.e();
+    onClick: function (e) {
+        Crafty('Menu').destroy();
+        Crafty.e('Menu').at(e.realX, e.realY);
     },
     register: function (id) {
         registry[id] = this;
@@ -108,7 +108,6 @@ Crafty.c('Road', {
             w: start.distance(end),
             rotation: radToDeg(start.angleTo(end))
         });
-
     }
 });
 
@@ -118,46 +117,133 @@ Crafty.c('Menu', {
             .color('blue')
             .attr({
                 alpha: .5,
-                x: 10,
-                y: 10,
                 w: 100,
                 h: 100
             });
-        this.items = [];
-    },
-
-    add: function (item) {
-        this.items.push(item);
+        this.items = [
+            //Crafty.e('MenuItem').order(0),
+            //Crafty.e('MenuItem').order(1)
+        ];
     }
 });
 
-
-
 Crafty.c('MenuItem', {
     init: function () {
-        this.requires('SimpleUI');
+        this.requires('SimpleUI')
+            .color('red')
+            .attr();
     }
 });
 
 Crafty.c('UI', {
     init: function () {
-        this.requires('2D, Canvas');
+        this.requires('2D, Canvas')
+            .attr({
+                z: 1000
+            });
     },
 
-    show: function (x, y) {
-
+    show: function () {
+        this.visible(true);
     },
 
     hide: function () {
+        this.visible(false);
     }
 });
 
 Crafty.c('SimpleUI', {
     init: function () {
-        this.requires('UI, Color');
+        this.requires('UI, Hoverable, Color');
+    },
+
+    at: function (x, y) {
+        return this.attr({
+            x: x,
+            y: y
+        });
+    }
+});
+
+Crafty.c('Hoverable', {
+    init: function () {
+        this.requires('Mouse')
+            .bind('MouseOver', this.onMouseOver)
+            .bind('MouseOut', this.onMouseOut);
+    }
+});
+
+Crafty.c('Button', {
+    init: function () {
+        this.requires('UI, Hoverable');
+    }
+});
+
+Crafty.c('Container', {
+    init: function () {
+        this.requires('UI');
+        this.items = [];
+        this.hide();
+    },
+
+    add: function (item) {
+        item.addComponent('UI');
+        item.hide();
+        this.items.push(item);
+        return this;
+    },
+
+    render: function () {
+        this.items.forEach(function (item) {
+
+        });
+    },
+
+    removeAll: function () {
+        console.log('not implements: remove item');
+        // this.items.remove(item);
+    }
+});
+
+Crafty.c('Dummy', {
+    init: function () {
+        console.log(Crafty.stage);
+        /*
+        this.requires('2D, Mouse')
+            .attr({
+                x: 0,
+                y: 0,
+                w: Crafty.stage.elem.clientHd
+            });
+        */
     }
 });
 
 function radToDeg(rad) {
     return rad * 180 / Math.PI;
+}
+
+function toggleFullScreen() {
+  if (!document.fullscreenElement &&    // alternative standard method
+      !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working methods
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    } else if (document.documentElement.msRequestFullscreen) {
+      document.documentElement.msRequestFullscreen();
+    } else if (document.documentElement.mozRequestFullScreen) {
+      document.documentElement.mozRequestFullScreen();
+    } else if (document.documentElement.webkitRequestFullscreen) {
+      document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
+  }
 }
